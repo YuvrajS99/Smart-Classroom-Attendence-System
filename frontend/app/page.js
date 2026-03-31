@@ -40,7 +40,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="max-w-md w-full shrink-0 space-y-8 bg-white p-10 rounded-2xl shadow-xl border border-gray-100">
+      <div className="max-w-md w-full mx-auto space-y-8 bg-white p-6 sm:p-10 rounded-2xl shadow-xl border border-gray-100">
         <div>
           <h2 className="mt-2 text-center text-4xl font-extrabold text-gray-900 tracking-tight">
             SmartAttendence

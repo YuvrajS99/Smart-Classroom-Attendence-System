@@ -3,16 +3,14 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import API from '../../lib/api';
 import { Users, Camera, Activity, Calendar } from 'lucide-react';
+import DashboardCards from '../../components/DashboardCards';
+import AttendanceCharts from '../../components/AttendanceCharts';
 import { format } from 'date-fns'; // Make sure to install or use native Intl.DateTimeFormat
 // Using native Intl for simplicity, no date-fns needed natively right now
 
 export default function Dashboard() {
   const { admin } = useAuth();
   const [captures, setCaptures] = useState([]);
-  const [stats, setStats] = useState({
-    totalCaptures: 0,
-    latestStudents: 0
-  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -24,12 +22,6 @@ export default function Dashboard() {
         });
 
         setCaptures(data);
-        
-        setStats({
-          totalCaptures: data.length,
-          latestStudents: data[0]?.studentCount || 0
-        });
-
       } catch (error) {
         console.error('Failed to fetch captures', error);
       } finally {
@@ -66,38 +58,9 @@ export default function Dashboard() {
         </div>
       ) : (
         <>
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500">Total Captures</p>
-                <p className="text-3xl font-bold text-gray-900 mt-1">{stats.totalCaptures}</p>
-              </div>
-              <div className="p-4 bg-blue-50 bg-opacity-50 rounded-xl">
-                <Camera className="w-8 h-8 text-blue-600" />
-              </div>
-            </div>
-
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500">Latest Students Detected</p>
-                <p className="text-3xl font-bold text-green-600 mt-1">{stats.latestStudents}</p>
-              </div>
-              <div className="p-4 bg-green-50 rounded-xl">
-                <Users className="w-8 h-8 text-green-600" />
-              </div>
-            </div>
-            
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500">System Status</p>
-                <p className="text-xl font-bold text-gray-900 mt-1">Online</p>
-              </div>
-              <div className="p-4 bg-purple-50 rounded-xl">
-                <Activity className="w-8 h-8 text-purple-600" />
-              </div>
-            </div>
-          </div>
+          <DashboardCards captures={captures} />
+          
+          <AttendanceCharts captures={captures} />
 
           {/* Recent History */}
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
