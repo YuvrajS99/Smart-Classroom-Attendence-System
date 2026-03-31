@@ -1,7 +1,7 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
+import API from '../lib/api';
 
 const AuthContext = createContext();
 
@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const { data } = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+      const { data } = await API.post('/auth/login', { email, password });
       setAdmin(data);
       localStorage.setItem('adminInfo', JSON.stringify(data));
       router.push('/dashboard');
@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (name, email, password) => {
     try {
-      const { data } = await axios.post('http://localhost:5000/api/auth/register', { name, email, password });
+      const { data } = await API.post('/auth/register', { name, email, password });
       setAdmin(data);
       localStorage.setItem('adminInfo', JSON.stringify(data));
       router.push('/dashboard');

@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
+import API from '../../lib/api';
 import { History as HistoryIcon, Search, Calendar } from 'lucide-react';
 
 export default function History() {
@@ -13,7 +13,7 @@ export default function History() {
     const fetchCaptures = async () => {
       try {
         if (!admin?.token) return;
-        const { data } = await axios.get('http://localhost:5000/api/captures', {
+        const { data } = await API.get('/captures', {
           headers: { Authorization: `Bearer ${admin.token}` }
         });
         setCaptures(data);

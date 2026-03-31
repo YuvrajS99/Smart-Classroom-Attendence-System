@@ -5,7 +5,7 @@ import * as faceapi from '@vladmandic/face-api';
 import * as tf from "@tensorflow/tfjs";
 import { useAuth } from '../../context/AuthContext';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
+import API from '../../lib/api';
 import { Camera, RefreshCw, Upload, CheckCircle } from 'lucide-react';
 
 export default function CaptureClassroom() {
@@ -138,7 +138,7 @@ export default function CaptureClassroom() {
     setError(null);
 
     try {
-      await axios.post('http://localhost:5000/api/captures', {
+      await API.post('/captures', {
         studentCount: result.count,
         imageBase64: result.imageBase64
       }, {

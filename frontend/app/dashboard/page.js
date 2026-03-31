@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
+import API from '../../lib/api';
 import { Users, Camera, Activity, Calendar } from 'lucide-react';
 import { format } from 'date-fns'; // Make sure to install or use native Intl.DateTimeFormat
 // Using native Intl for simplicity, no date-fns needed natively right now
@@ -19,7 +19,7 @@ export default function Dashboard() {
     const fetchCaptures = async () => {
       try {
         if (!admin?.token) return;
-        const { data } = await axios.get('http://localhost:5000/api/captures', {
+        const { data } = await API.get('/captures', {
           headers: { Authorization: `Bearer ${admin.token}` }
         });
 
