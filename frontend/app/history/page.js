@@ -46,9 +46,9 @@ export default function History() {
   if (!admin) return null;
 
   return (
-    <div className="p-6 lg:p-10 max-w-7xl mx-auto w-full h-full flex flex-col">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-10 w-full h-full flex flex-col">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 flex items-center">
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 flex items-center">
           <HistoryIcon className="mr-3 text-blue-600" size={32} />
           Detection History
         </h1>

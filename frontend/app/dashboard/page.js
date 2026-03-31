@@ -44,10 +44,10 @@ export default function Dashboard() {
   if (!admin) return null;
 
   return (
-    <div className="p-6 lg:p-10 max-w-7xl mx-auto w-full">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 lg:py-10 w-full">
       <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Welcome back, {admin.name}</h1>
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 tracking-tight">Welcome back, {admin.name}</h1>
           <p className="text-gray-500 mt-1">Here is the latest snapshot of your classroom attendence.</p>
         </div>
         {!loading && (
@@ -61,7 +61,7 @@ export default function Dashboard() {
       {loading ? (
         <div className="space-y-8">
           {/* Cards Skeleton */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...Array(4)].map((_, i) => (
               <div key={i} className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between h-[150px]">
                 <div className="flex justify-between items-center mb-4">

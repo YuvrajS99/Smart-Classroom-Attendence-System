@@ -81,7 +81,7 @@ export default function Home() {
 
       {/* Right Column: Auth Form */}
       <div className="flex items-center justify-center px-4 sm:px-6 lg:px-12 py-12 relative">
-        <div className="max-w-md w-full space-y-8">
+        <div className="max-w-md w-full mx-auto space-y-8">
           
           {/* Mobile Logo Header */}
           <div className="lg:hidden text-center flex flex-col items-center">

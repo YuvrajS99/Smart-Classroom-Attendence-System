@@ -9,7 +9,7 @@ export default function Profile() {
   if (!admin) return null;
 
   return (
-    <div className="p-8 h-full flex flex-col items-center justify-center">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 h-full flex flex-col items-center justify-center w-full">
       <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-12 max-w-lg w-full text-center relative overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
         
@@ -20,7 +20,7 @@ export default function Profile() {
              </div>
           </div>
           
-          <h1 className="text-3xl font-extrabold text-gray-900">{admin.name}</h1>
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-gray-900">{admin.name}</h1>
           <p className="text-blue-600 font-medium mb-8 flex items-center justify-center">
             <ShieldCheck className="w-5 h-5 mr-1" />
             System Administrator
