@@ -1,8 +1,10 @@
 "use client";
 import './globals.css';
 import { AuthProvider, useAuth } from '../context/AuthContext';
+import { ToastProvider, useToast } from '../context/ToastContext';
 import Sidebar from '../components/Sidebar';
-import Topbar from '../components/Topbar';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import { usePathname } from 'next/navigation';
 import { Inter } from 'next/font/google';
 import { useState, useEffect } from 'react';
@@ -14,7 +16,7 @@ const LayoutContent = ({ children }) => {
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
-  // Exclude login/register page from requiring a sidebar
+  // Exclude login/register page from requiring navigation
   const isAuthPage = pathname === '/' || pathname === '/register';
 
   // Prevent background scrolling when mobile menu expands
@@ -26,21 +28,26 @@ const LayoutContent = ({ children }) => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-blue-600 border-t-transparent shadow-lg shadow-blue-600/20"></div>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col md:flex-row bg-gray-50 min-h-screen">
-      {!isAuthPage && admin && <Topbar onMenuClick={() => setIsSidebarOpen(true)} />}
+    <div className="flex bg-gray-50 min-h-screen w-full relative">
       {!isAuthPage && admin && <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />}
       
-      <main className={`flex-1 w-full transition-all duration-300 ${!isAuthPage && admin ? 'md:ml-64' : ''}`}>
-        <div className="min-h-screen">
-          {children}
-        </div>
-      </main>
+      <div className="flex-1 flex flex-col min-w-0 transition-all duration-300">
+        {!isAuthPage && <Navbar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />}
+        
+        <main className="flex-1 overflow-visible">
+          <div className="w-full mx-auto" style={{ minHeight: 'calc(100vh - 150px)' }}>
+            {children}
+          </div>
+        </main>
+        
+        {!isAuthPage && <Footer />}
+      </div>
     </div>
   );
 };
@@ -50,9 +57,11 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <AuthProvider>
-          <LayoutContent>
-            {children}
-          </LayoutContent>
+          <ToastProvider>
+            <LayoutContent>
+              {children}
+            </LayoutContent>
+          </ToastProvider>
         </AuthProvider>
       </body>
     </html>

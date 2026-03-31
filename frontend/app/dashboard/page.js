@@ -1,15 +1,15 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 import API from '../../lib/api';
-import { Users, Camera, Activity, Calendar } from 'lucide-react';
+import { Users, Camera, Activity, Calendar, RefreshCcw } from 'lucide-react';
 import DashboardCards from '../../components/DashboardCards';
 import AttendanceCharts from '../../components/AttendanceCharts';
-import { format } from 'date-fns'; // Make sure to install or use native Intl.DateTimeFormat
-// Using native Intl for simplicity, no date-fns needed natively right now
 
 export default function Dashboard() {
   const { admin } = useAuth();
+  const { addToast } = useToast();
   const [captures, setCaptures] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -24,12 +24,13 @@ export default function Dashboard() {
         setCaptures(data);
       } catch (error) {
         console.error('Failed to fetch captures', error);
+        addToast('Failed to load dashboard data', 'error');
       } finally {
         setLoading(false);
       }
     };
     fetchCaptures();
-  }, [admin]);
+  }, [admin, addToast]);
 
   const formatDate = (dateString) => {
     if (!dateString) return "No Date";
@@ -43,17 +44,46 @@ export default function Dashboard() {
   if (!admin) return null;
 
   return (
-    <div className="p-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Welcome back, {admin.name}</h1>
-        <p className="text-gray-500 mt-1">Here is the latest snapshot of your classroom attendence.</p>
+    <div className="p-6 lg:p-10 max-w-7xl mx-auto w-full">
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">Welcome back, {admin.name}</h1>
+          <p className="text-gray-500 mt-1">Here is the latest snapshot of your classroom attendence.</p>
+        </div>
+        {!loading && (
+          <button onClick={() => window.location.reload()} className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50 hover:text-gray-900 transition-colors shadow-sm font-medium text-sm disabled:opacity-50">
+            <RefreshCcw size={16} />
+            Refresh
+          </button>
+        )}
       </div>
 
       {loading ? (
-        <div className="flex justify-center p-12">
-          <div className="animate-pulse space-y-4 w-full">
-            <div className="h-24 bg-gray-200 rounded-xl w-full"></div>
-            <div className="h-64 bg-gray-200 rounded-xl w-full"></div>
+        <div className="space-y-8">
+          {/* Cards Skeleton */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between h-[150px]">
+                <div className="flex justify-between items-center mb-4">
+                  <div className="w-12 h-12 rounded-2xl bg-gray-200 animate-pulse"></div>
+                  <div className="w-20 h-6 rounded-full bg-gray-200 animate-pulse"></div>
+                </div>
+                <div>
+                  <div className="w-16 h-8 bg-gray-200 rounded-lg animate-pulse mb-2"></div>
+                  <div className="w-32 h-4 bg-gray-200 rounded-lg animate-pulse"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          {/* Charts Skeleton */}
+          <div className="w-full h-96 bg-white rounded-3xl shadow-sm border border-gray-100 p-6 flex flex-col">
+            <div className="w-48 h-6 bg-gray-200 rounded animate-pulse mb-6"></div>
+            <div className="flex-1 w-full flex items-end justify-between gap-4">
+               {[...Array(7)].map((_, i) => (
+                 <div key={i} className="w-full bg-gray-100 rounded-t-lg animate-pulse" style={{ height: `${Math.random() * 60 + 20}%`}}></div>
+               ))}
+            </div>
           </div>
         </div>
       ) : (
@@ -63,45 +93,51 @@ export default function Dashboard() {
           <AttendanceCharts captures={captures} />
 
           {/* Recent History */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center">
+          <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mt-8">
+            <div className="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
               <h2 className="text-lg font-bold text-gray-900">Recent Captures</h2>
             </div>
             {captures.length === 0 ? (
-               <div className="p-10 flex flex-col items-center justify-center text-gray-400">
-                <Camera size={48} className="mb-4 text-gray-300" />
-                <p>No captures found yet. Start by capturing the classroom!</p>
+               <div className="py-16 px-6 flex flex-col items-center justify-center text-gray-400">
+                <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                  <Camera size={32} className="text-gray-300" />
+                </div>
+                <h3 className="text-gray-900 font-medium text-lg mb-1">No captures found yet</h3>
+                <p className="text-sm">Start by capturing the classroom from the camera tab!</p>
                </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+              <div className="overflow-x-auto hide-scrollbar">
+                <table className="min-w-full divide-y divide-gray-100 border-collapse">
+                  <thead className="bg-gray-50/80">
                     <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Detected Count</th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Preview</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Date & Time</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Detected Count</th>
+                      <th className="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider rounded-tr-3xl">Preview</th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="bg-white divide-y divide-gray-50">
                     {captures.slice(0, 5).map((capture) => (
-                      <tr key={capture._id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <tr key={capture._id} className="hover:bg-gray-50/80 transition-colors group">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 font-medium">
                           <div className="flex items-center">
-                            <Calendar className="w-4 h-4 mr-2 text-gray-400" />
+                            <Calendar className="w-4 h-4 mr-2.5 text-blue-500" />
                             {formatDate(capture.createdAt)}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                          <span className="px-3 py-1 inline-flex text-xs leading-5 font-bold rounded-full bg-blue-50 text-blue-700 border border-blue-100">
                             {capture.studentCount} Students
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <img 
-                            src={capture.imageUrl} 
-                            alt="Capture Preview" 
-                            className="h-12 w-20 object-cover rounded-lg border border-gray-200"
-                          />
+                        <td className="px-6 py-4 whitespace-nowrap items-center">
+                          <div className="relative w-20 h-12 rounded-lg overflow-hidden border border-gray-200 group-hover:border-blue-300 transition-colors shadow-sm">
+                            <img 
+                              src={capture.imageUrl} 
+                              alt="Capture Preview" 
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
+                          </div>
                         </td>
                       </tr>
                     ))}
