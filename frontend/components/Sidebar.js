@@ -7,7 +7,9 @@ import { LayoutDashboard, Camera, History, User, LogOut, X, Info, Rocket } from 
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
   const pathname = usePathname();
-  const { logout } = useAuth();
+  const { logout, admin } = useAuth();
+
+  if (!admin) return null; // Only show auth sidebar to logged in users
 
   const appNavItems = [
     { name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
@@ -26,46 +28,38 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       {/* Mobile Backdrop Overlay */}
       {isOpen && (
         <div 
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40 backdrop-blur-sm transition-opacity" 
+          className="lg:hidden fixed inset-0 bg-black/50 z-40 backdrop-blur-sm transition-opacity" 
           onClick={() => setIsOpen(false)}
         />
       )}
 
       {/* Sidebar Container */}
       <div className={`
-        fixed top-0 left-0 h-screen w-64 bg-gray-900 text-white flex flex-col z-50 transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none lg:static lg:translate-x-0
+        fixed top-0 left-0 h-full w-64 bg-white shadow-lg transition-transform z-50 flex flex-col lg:hidden
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
-        <div className="p-6 flex items-center justify-between border-b border-gray-800 lg:hidden">
+        <div className="p-6 flex items-center justify-between border-b border-gray-100">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
               <span className="text-white font-bold text-lg leading-none">S</span>
             </div>
-            <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent tracking-wide">
-              SmartAttendence
+            <h1 className="text-xl font-bold text-gray-900 tracking-wide">
+              Menu
             </h1>
           </div>
           <button 
-            className="lg:hidden text-gray-400 hover:text-white transition p-1 bg-gray-800 rounded-lg hover:bg-gray-700"
+            className="text-gray-400 hover:text-gray-900 transition p-1 rounded-lg hover:bg-gray-100"
             onClick={() => setIsOpen(false)}
           >
             <X size={24} />
           </button>
         </div>
         
-        {/* Desktop Header */}
-        <div className="p-6 hidden lg:flex items-center gap-3 border-b border-gray-800">
-           <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/30">
-              <span className="text-white font-bold text-lg leading-none">S</span>
-           </div>
-           <span className="text-lg font-bold bg-gradient-to-r from-gray-100 to-gray-300 bg-clip-text text-transparent tracking-wide">Admin panel</span>
-        </div>
-
-        <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-6 flex flex-col hide-scrollbar">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-6 flex flex-col hide-scrollbar bg-white text-gray-800">
           
           <nav>
-            <p className="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Applications</p>
-            <ul className="space-y-1">
+            <p className="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Applications</p>
+            <ul className="space-y-1 block">
               {appNavItems.map((item) => {
                 const isActive = pathname === item.path;
                 return (
@@ -75,14 +69,14 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                       onClick={() => setIsOpen(false)}
                       className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
                         isActive 
-                        ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20' 
-                        : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                        ? 'bg-blue-50 text-blue-600 font-semibold' 
+                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                       }`}
                     >
-                      <span className={`${isActive ? 'text-white' : 'text-gray-400 group-hover:text-blue-400 transition-colors'}`}>
+                      <span className={`${isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-600 transition-colors'}`}>
                         {item.icon}
                       </span>
-                      <span className="font-medium">{item.name}</span>
+                      <span>{item.name}</span>
                     </Link>
                   </li>
                 );
@@ -90,10 +84,10 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             </ul>
           </nav>
 
-          <nav className="lg:hidden">
-            <div className="h-px bg-gray-800 my-4 mx-4"></div>
-            <p className="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Global</p>
-            <ul className="space-y-1">
+          <nav>
+            <div className="h-px bg-gray-100 my-4 mx-4"></div>
+            <p className="px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Global</p>
+            <ul className="space-y-1 block">
               {globalNavItems.map((item) => {
                 const isActive = pathname === item.path;
                 return (
@@ -103,14 +97,14 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
                       onClick={() => setIsOpen(false)}
                       className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
                         isActive 
-                        ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20' 
-                        : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                        ? 'bg-blue-50 text-blue-600 font-semibold' 
+                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                       }`}
                     >
-                      <span className={`${isActive ? 'text-white' : 'text-gray-400 group-hover:text-blue-400 transition-colors'}`}>
+                      <span className={`${isActive ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-600 transition-colors'}`}>
                         {item.icon}
                       </span>
-                      <span className="font-medium">{item.name}</span>
+                      <span>{item.name}</span>
                     </Link>
                   </li>
                 );
@@ -119,10 +113,13 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           </nav>
         </div>
         
-        <div className="p-4 border-t border-gray-800 lg:hidden group">
+        <div className="p-4 border-t border-gray-100 bg-gray-50 group mt-auto">
           <button
-            onClick={logout}
-            className="flex items-center justify-center gap-3 text-red-400 hover:text-white hover:bg-red-600 w-full px-4 py-3 rounded-xl transition-all border border-gray-800 group-hover:border-red-500/30"
+            onClick={() => {
+              setIsOpen(false);
+              logout();
+            }}
+            className="flex items-center justify-center gap-3 text-red-600 hover:text-white hover:bg-red-600 w-full px-4 py-3 rounded-xl transition-all border border-red-100 group-hover:border-transparent bg-white shadow-sm"
           >
             <LogOut size={20} />
             <span className="font-medium">Logout</span>
