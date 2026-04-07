@@ -9,12 +9,9 @@ This project demonstrates **full-stack AI integration** using modern web technol
 ---
 
 # 🚀 Live Demo
-
-Frontend (Vercel):  
+  
 https://smart-classroom-attendence-system.vercel.app/
 
-Backend (Render):  
-https://smart-classroom-attendence-system.onrender.com/
 
 ---
 
